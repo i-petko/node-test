@@ -1,0 +1,30 @@
+name: Docker Image CI
+
+env:
+  REPO: petko8/node-test
+  IMAGE_TAG: $(date +%s)
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+      
+    - name: Build
+      run: docker build --tag $REPO:$IMAGE_TAG .
+      
+    - name: Test
+      run: |
+        docker run --publish 7000:7000 --detach --name node-test $REPO:$IMAGE_TAG 
+        [[ "$(curl -s localhost:7000)" == "Hello Five!" ]] || exit 1
+        
+    - name: Push the image
+      if: ${{ success() }}
+      run: docker push $REPO:$IMAGE_TAG

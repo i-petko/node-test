@@ -20,7 +20,8 @@ jobs:
       run: |
         docker build --tag petko8/node-test:${{env.date}} .
         docker run --publish 7000:7000 --detach --name node-test petko8/node-test:${{env.date}} 
-        curl -s localhost:7000
+        docker ps
+        compgen -c
         
     - name: Push the image
       if: ${{ success() }}

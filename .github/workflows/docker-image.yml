@@ -17,10 +17,8 @@ jobs:
     - name: Prepare tag
       run: echo "::set-env name=date::$(date +'%Y-%m-%d')"
     - name: Build
-      run: docker build --tag petko8/node-test:${{env.date}} .
-      
-    - name: Test
       run: |
+        docker build --tag petko8/node-test:${{env.date}} .
         docker run --publish 7000:7000 --detach --name node-test petko8/node-test:${{env.date}} 
         [[ "$(curl -s localhost:7000)" == "Hello Five!" ]] || exit 1
         

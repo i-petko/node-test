@@ -15,17 +15,13 @@ jobs:
     - uses: actions/checkout@v2
       
     - name: Build
-      set-env:
-        REPO: petko8/node-test
-        IMAGE_TAG: $(date +%s)
-
-      run: docker build --tag $REPO:$IMAGE_TAG .
+      run: docker build --tag petko8/node-test:$GITHUB_RUN_ID .
       
     - name: Test
       run: |
-        docker run --publish 7000:7000 --detach --name node-test $REPO:$IMAGE_TAG 
+        docker run --publish 7000:7000 --detach --name node-test petko8/node-test:$GITHUB_RUN_ID 
         [[ "$(curl -s localhost:7000)" == "Hello Five!" ]] || exit 1
         
     - name: Push the image
       if: ${{ success() }}
-      run: docker push $REPO:$IMAGE_TAG
+      run: docker push petko8/node-test:$GITHUB_RUN_ID

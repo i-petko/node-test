@@ -14,14 +14,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
       
+    - name: Prepare tag
+      run: echo "::set-output name=date::$(date +'%Y-%m-%d')"
     - name: Build
-      run: docker build --tag petko8/node-test:"$GITHUB_RUN_ID" .
+      run: docker build --tag petko8/node-test:${{steps.date.outputs.date}} .
       
     - name: Test
       run: |
-        docker run --publish 7000:7000 --detach --name node-test petko8/node-test:"$GITHUB_RUN_ID" 
+        docker run --publish 7000:7000 --detach --name node-test petko8/node-test:${{steps.date.outputs.date}} 
         [[ "$(curl -s localhost:7000)" == "Hello Five!" ]] || exit 1
         
     - name: Push the image
       if: ${{ success() }}
-      run: docker push petko8/node-test:"$GITHUB_RUN_ID"
+      run: docker push petko8/node-test:${{steps.date.outputs.date}}

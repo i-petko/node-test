@@ -36,11 +36,20 @@ jobs:
 
     - name: test
       run: |
-        docker build --tag petko8/node-test:${{env.date}} .
         docker run --publish 7000:7000 --detach --name node-test petko8/node-test:${{env.date}} 
         sleep 5
-        curl localhost:7000
+        [[ "$(curl -s localhost:7000)" == "Hello Five!" ]] || exit 1
                 
-    - name: Push the image
-      if: ${{ success() }}
-      run: docker push petko8/node-test:${{env.date}}
+    - name: Push
+      uses: docker/build-push-action@v1.1.1
+      with:
+        # Username used to log in to a Docker registry. If not set then no login will occur
+        username: petko8
+        # Password or personal access token used to log in to a Docker registry. If not set then no login will occur
+        password: a187b076-5313-494a-b698-55a99ad337b4
+        # Docker repository to tag the image with
+        repository: petko8/node-test
+        # Comma-delimited list of tags. These will be added to the registry/repository to form the image's tags
+        tags: ${{env.date}}
+        # Whether to push the image
+        push: true

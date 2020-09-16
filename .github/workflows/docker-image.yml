@@ -38,8 +38,8 @@ jobs:
       run: |
         docker build --tag petko8/node-test:${{env.date}} .
         docker run --publish 7000:7000 --detach --name node-test petko8/node-test:${{env.date}} 
-        netstat -an | grep LISTEN
-        curl -i 0.0.0.0:7000
+        sleep 5
+        curl localhost:7000
                 
     - name: Push the image
       if: ${{ success() }}

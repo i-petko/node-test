@@ -49,7 +49,7 @@ jobs:
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    - name: Build and tag image to Amazon ECR
+    - name: Build and tag image
       id: build-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
@@ -64,7 +64,6 @@ jobs:
         
     - name: test
       env:
-        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
         ECR_REPOSITORY: 868512425017.dkr.ecr.us-east-2.amazonaws.com/node-test
         IMAGE_TAG: ${{ github.sha }}
       run: |
@@ -76,7 +75,7 @@ jobs:
       id: push-image
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        ECR_REPOSITORY: 868512425017.dkr.ecr.us-east-2.amazonaws.com/node-test
+        ECR_REPOSITORY: node-test
         IMAGE_TAG: ${{ github.sha }}
       run: |
         # Build a docker container and

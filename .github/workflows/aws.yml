@@ -63,6 +63,10 @@ jobs:
         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         
     - name: test
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ECR_REPOSITORY: 868512425017.dkr.ecr.us-east-2.amazonaws.com/node-test
+        IMAGE_TAG: ${{ github.sha }}
       run: |
         docker run --publish 7000:7000 --detach --name node-test $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG 
         sleep 5
